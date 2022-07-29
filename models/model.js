@@ -5,16 +5,33 @@ var Schema = mongoose.Schema
 var userSchema = new Schema({
     username:{
         type: String,
-        required: true,
         unique: true
     },
     password:{
-        type:String,
-        required: true
+        type:String
     },
     userType:{
+        type:String
+    },
+    token:{
+        type: String
+    },
+    seller_id:{
         type:String,
-        required: true
+        unique: true
+    },
+    itemId:{
+        type: String,
+        unique: true
+    },
+    itemName:{
+        type:String
+        },
+    itemCategory:{
+        type:String
+    },
+    itemPrice:{
+        type:Number
     }
 })
 

@@ -11,10 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.0",
+    "crypto": "^1.0.1",
+    "cuid": "^2.1.8",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "node-modules": "^1.0.1",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "router": "^1.3.7",
+    "uuid": "^8.3.2"
   }
 }
