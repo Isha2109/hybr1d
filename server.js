@@ -87,7 +87,6 @@ app.post('/api/auth/register', async function(req, res){
     }
     else if(ok.message =="user not found"){
         ok = await registerUser(regObj);
-        //console.log(ok)
         if(ok.message=="user registered")
         {
             res.status(200).send({status:"ok", message:"user registration successful, please login to continue"})
@@ -111,10 +110,8 @@ app.post('/api/auth/login', async function(req, res){
     ok = await userExistsCheck(loginObj)
     if(ok){
         ok = await tokenCheck(loginObj)
-        console.log(ok)
         if(!ok){
             ok = await passCheck(loginObj)
-            console.log(ok)
             if(ok){
                 try{
                     accessToken = jwt.sign( {username: loginObj.username }, process.env.ACCESS_TOKEN_SECRET)

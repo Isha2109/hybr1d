@@ -4,8 +4,7 @@ var Schema = mongoose.Schema
 
 var userSchema = new Schema({
     username:{
-        type: String,
-        unique: true
+        type: String
     },
     password:{
         type:String
@@ -17,12 +16,10 @@ var userSchema = new Schema({
         type: String
     },
     seller_id:{
-        type:String,
-        unique: true
+        type:String
     },
     itemId:{
-        type: String,
-        unique: true
+        type: String
     },
     itemName:{
         type:String
@@ -32,7 +29,19 @@ var userSchema = new Schema({
     },
     itemPrice:{
         type:Number
+    },
+    orderQuantity:{
+        type:Number
+    },
+    orderId:{
+        type:String
+    },
+    orderDate:{
+        type:Date
+    },
+    totalItemQuantity:{
+        type:Number
     }
 })
 
-module.exports = mongoose.model('ecommUser', userSchema)
+module.exports = mongoose.model('ecommuser', userSchema)

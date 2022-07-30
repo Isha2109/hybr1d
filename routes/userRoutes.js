@@ -1,15 +1,15 @@
 const express= require('express');
 const router = express.Router();
 const {userLogoutCheck, userLogout} = require('../controller/controller')
-const {listOfSellers} = require('../controller/buyerController')
-const {addItemsToDatabase, getAllItemsFunction} = require('../controller/sellerController')
+const {listOfSellers, viewCatalogFunction} = require('../controller/buyerController')
+const {addItemsToDatabase, getAllItemsFunction, createCatalogFunction} = require('../controller/sellerController');
+const { getItemId } = require('../general/general');
 
 
 router.put('/logout', async function(req, res){
     let logoutObj ={
         username: req.query.username
     }
-    console.log(logoutObj)
     //user exists, already logged out? 
     ok = await userLogoutCheck(logoutObj)
     if(ok.data.message == "user not found" ){
@@ -41,7 +41,9 @@ router.get('/list-of-sellers', async function(req, res){
 router.post('/products', async function(req,res){
     let prodObj={
         itemName: req.body.itemName,
-        itemCategory: req.body.itemCategory
+        itemCategory: req.body.itemCategory,
+        itemPrice: req.body.itemPrice,
+        itemId: await getItemId()
         }
     ok = await addItemsToDatabase(prodObj)
     if(ok.message=="item added"){
@@ -57,6 +59,40 @@ router.get('/getAllItems', async function(req,res){
     ok = await getAllItemsFunction()
     if(ok) res.status(200).send({status:"ok", message:"list of items", data: ok})
     else res.status(404).send({status:"ok", message:"no items found"})
+})
+
+router.post('/create-catalog', async function(req,res){
+    //catObj frontend is sending, as per user choice of products
+    let catObj = {
+        itemName: req.body.itemName,
+        seller_id: req.body.seller_id
+    }
+    ok = await createCatalogFunction(catObj)
+    if(ok.message=="success") res.status(200).send({status:"ok", message:"seller catalogue created"})
+    else if(ok.message=="seller already selling an item") res.status(200).send({status:"ok", message:"seller already selling an item"})
+    else if(ok.message=="item already exists for seller") res.status(200).send({status:"ok", message:"item already exists for seller"})
+    else res.status(404).send({status:"ok", message:"no catalogue available"})
+
+})
+
+
+//show catalogue
+
+router.get('/seller-catalog/:seller_id', async function(req, res){
+    let seller_id = req.params.seller_id
+    ok = await viewCatalogFunction(seller_id)
+    if(ok.message=="no items found for seller") res.status(200).send({status:"ok", message:"no items found for seller"})
+    else if(ok.message=="seller not found") res.status(404).send({status:"ok", message:"seller not found"})
+    else res.status(200).send({status:"ok", message:ok})
+
+})
+
+router.post('/create-order/:seller_id', async function(req, res){
+    let orderObj={
+        seller_id : req.params.seller_id,
+        itemName: req.body.itemName
+    }
+
 })
 
 

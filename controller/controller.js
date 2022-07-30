@@ -27,7 +27,6 @@ async function registerUser(regObj){
             await request.save()
             seller_id = await getSellerId()
             data = await userSchema.updateOne({ username : regObj.username},{$set : {seller_id: seller_id}})
-            console.log(data)
             if(data) return {message:"user registered"}
             else return {message:"not valid"}
         }
@@ -65,7 +64,6 @@ async function userExistsCheck(loginObj){
 async function tokenCheck(loginObj){
         try{
             loginCheck = await userSchema.findOne({username: loginObj.username})
-            console.log(loginCheck)
             if(!loginCheck.token) return false
             else return true
         }
