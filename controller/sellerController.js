@@ -1,18 +1,30 @@
-const userSchema = require('../models/model')
+const { userSchema } = require('../models/model')
 const {getItemId} = require('../general/general')
 
 
-async function addItemsToDatabase(prodObj) 
-{
-    request = new userSchema(prodObj)
-        try{
-            data = await request.save()
-            if(data) return {message:"item added"}
-            else return {message:"not added"}
+async function addItemsToDatabase(catalog, username) 
+{      
+    console.log(username)
+    userInfo = await userSchema.findOne({
+        username : username, 
+        userType : {
+            $eq: "seller"
         }
-        catch(e){{
-            console.log(e)
-        }}
+    })
+    if(!userInfo){
+        return { message:"not a seller" }
+    }
+    ok = await userSchema.updateOne(
+        {
+            username : username,
+            $set : { catalog : catalog }
+        }
+    )
+    if (ok.modifiedCount == 1) {
+        return { message: "item added"}
+    } else { 
+        return { message: "not added"}
+    }
 }
 
 async function getAllItemsFunction(){

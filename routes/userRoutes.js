@@ -31,27 +31,26 @@ router.put('/logout', async function(req, res){
 
 router.get('/list-of-sellers', async function(req, res){
     ok = await listOfSellers()
-   // console.log(ok[0])
     if(ok) res.status(200).send({status:"ok", message:"list of sellers", data: ok})
     else res.status(200).send({status:"ok", message:"no seller found"})
 
 })
 //add items to my db
 //get api to show items to seller to create catalogue
-router.post('/products', async function(req,res){
-    let prodObj={
-        itemName: req.body.itemName,
-        itemCategory: req.body.itemCategory,
-        itemPrice: req.body.itemPrice,
-        itemId: await getItemId()
-        }
-    ok = await addItemsToDatabase(prodObj)
-    if(ok.message=="item added"){
-        res.status(200).send({status:"ok", message:"item added successfully"})
+router.post('/addProducts', async function(req,res){
+    let catalog = req.body.catalog
+    let username = req.username.username
+
+    ok = await addItemsToDatabase(catalog, username)
+    if(ok.message == "not a seller"){
+        res.status(400).send({status:"ok", message:"not a seller"})
+    }
+    else if(ok.message=="item added"){
+        res.status(200).send({status:"ok", message:"catalog added successfully"})
     }
     
     else if(ok.message=="not added"){
-        res.status(200).send({status:"ok", message:"product not added"})
+        res.status(400).send({status:"ok", message:"catalog addition failed"})
     }
     else res.status(404).send({status:"ok", message:"an unknown error occured"})
 })

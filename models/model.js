@@ -18,17 +18,8 @@ var userSchema = new Schema({
     seller_id:{
         type:String
     },
-    itemId:{
-        type: String
-    },
-    itemName:{
-        type:String
-        },
-    itemCategory:{
-        type:String
-    },
-    itemPrice:{
-        type:Number
+    catalog:{
+        type: [ { type: Schema.Types.Mixed }]
     },
     orderQuantity:{
         type:Number
@@ -44,4 +35,8 @@ var userSchema = new Schema({
     }
 })
 
-module.exports = mongoose.model('ecommuser', userSchema)
+var userSchema = mongoose.model('ecommuser', userSchema)
+
+module.exports = {
+    userSchema
+}

@@ -1,5 +1,5 @@
-const userSchema = require('../models/model')
-const {getSellerId} = require('../general/general')
+const { userSchema }= require('../models/model')
+const { getSellerId } = require('../general/general')
 
 async function userCheck(regObj){
     try{
@@ -13,17 +13,14 @@ async function userCheck(regObj){
 }
 async function registerUser(regObj){
     request = new userSchema(regObj)
-    console.log(request)
     try{
         if(request.userType == "buyer")
-        {
+        {   
             await request.save()
-            return {message:"user registered"}
+            return { message:"user registered" }
         }
         else if(regObj.userType =="seller")
         {
-            //getSellerId
-            //ok = await getSellerId()
             await request.save()
             seller_id = await getSellerId()
             data = await userSchema.updateOne({ username : regObj.username},{$set : {seller_id: seller_id}})

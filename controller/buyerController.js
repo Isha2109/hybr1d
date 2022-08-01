@@ -1,4 +1,4 @@
-const userSchema = require('../models/model')
+const { userSchema } = require('../models/model')
 
 async function listOfSellers() 
 {
