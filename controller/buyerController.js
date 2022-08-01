@@ -22,30 +22,22 @@ async function listOfSellers(username)
     }}
 }
 
-async function viewCatalogFunction(seller_id)
+async function viewCatalogFunction(seller_id, username)
 {
     //seller valid, sellerid itemname?, itemname details
-    ok = await userSchema.find({seller_id:seller_id})
-    if(ok)
-    {
-        if(ok[0].itemName)
-        {
-                try{
-                    itemName = ok[0].itemName
-                    result = await userSchema.find({itemName:itemName},{itemCategory:1, _id:0, itemPrice:1, itemName:1})
-                    return {"sellerName": ok[0].username, "sellerId": ok[0].seller_id, "itemDetails": result[1]}
-                }
-                catch(ex){
-                    console.log(ex)
-                }
+    userInfo = await userSchema.findOne({
+        username : username, 
+        userType : {
+            $eq: "buyer"
         }
-        else{
-            return {message:"no items found for seller"}
-        }
+    })
+    if(!userInfo){
+        return { statusMessage:"not a buyer", data:{} }
     }
-    else{
-        return {message:"seller not found"}
-    }
+    var sellerData = await userSchema.findOne(
+        { seller_id : seller_id},
+        { _id: 0, catalog:1 })
+    return { statusMessage:null , data: sellerData }
 }
 
 //orderid, order quantity, order
