@@ -42,28 +42,31 @@ async function viewCatalogFunction(seller_id, username)
 
 async function createOrder(orderReqObj){
     try{
-        ok = await userSchema.findOne({ seller_id:orderReqObj.seller_id })
+        ok = await userSchema.findOne({ seller_id:orderReqObj.seller_id },{ catalog:1 })
         if(ok){
+            catalog = ok
+            console.log(catalog)
+            console.log(orderReqObj.items)
             orderObj = { 
                 username: orderReqObj.username,
                 orderedItems : orderReqObj.items,
                 orderDate : new Date()
             }
-            ok = await userSchema.findOne( { 
-                seller_id:orderObj.seller_id 
-            },{
-                $push: {
-                    orders:{
-                        orderObj
-                    }}
-            })
+            // ok = await userSchema.findOne( { 
+            //     seller_id:orderObj.seller_id 
+            // },{
+            //     $push: {
+            //         orders:{
+            //             orderObj
+            //         }}
+            // })
 
-            if (ok) {
-                return {message: "order created"}
-            }
-            else {
-                return {message: "order creation failed"}
-            }
+            // if (ok) {
+            //     return {message: "order created"}
+            // }
+            // else {
+            //     return {message: "order creation failed"}
+            // }
         }
         else{
            return { message:"not a seller" }
