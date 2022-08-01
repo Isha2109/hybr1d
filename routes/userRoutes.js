@@ -30,9 +30,13 @@ router.put('/logout', async function(req, res){
 })
 
 router.get('/list-of-sellers', async function(req, res){
-    ok = await listOfSellers()
-    if(ok) res.status(200).send({status:"ok", message:"list of sellers", data: ok})
-    else res.status(200).send({status:"ok", message:"no seller found"})
+    username = req.username.username
+    result = await listOfSellers(username)
+    if(result.data) res.status(200).send({status:"ok", message:"list of sellers", data: result})
+    else if(result.statusMessage == "not a buyer"){
+        res.status(400).send({status:"ok", message:"not a buyer"})
+    }
+    else res.status(400).send({status:"ok", message:"no seller found"})
 
 })
 //add items to my db

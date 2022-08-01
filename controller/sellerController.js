@@ -4,7 +4,6 @@ const {getItemId} = require('../general/general')
 
 async function addItemsToDatabase(catalog, username) 
 {      
-    console.log(username)
     userInfo = await userSchema.findOne({
         username : username, 
         userType : {
@@ -14,13 +13,13 @@ async function addItemsToDatabase(catalog, username)
     if(!userInfo){
         return { message:"not a seller" }
     }
-    ok = await userSchema.updateOne(
+    ok = await userSchema.findOneAndUpdate(
+        { username : username },
         {
-            username : username,
             $set : { catalog : catalog }
         }
     )
-    if (ok.modifiedCount == 1) {
+    if (ok) {
         return { message: "item added"}
     } else { 
         return { message: "not added"}

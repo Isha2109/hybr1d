@@ -1,14 +1,25 @@
 const { userSchema } = require('../models/model')
 
-async function listOfSellers() 
+async function listOfSellers(username) 
 {
-        try{
-            var result = await userSchema.find({ seller_id : { $ne:null }});
-            return result
+
+    userInfo = await userSchema.findOne({
+        username : username, 
+        userType : {
+            $eq: "buyer"
         }
-        catch(e){{
-            console.log(e)
-        }}
+    })
+    if(!userInfo){
+        return { statusMessage:"not a buyer", data:[] }
+    }
+    try{
+        
+        var sellerData = await userSchema.find({ seller_id : { $ne:null }});
+        return { statusMessage:null , data: sellerData }
+    }
+    catch(e){{
+        console.log(e)
+    }}
 }
 
 async function viewCatalogFunction(seller_id)
