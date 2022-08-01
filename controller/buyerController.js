@@ -3,7 +3,7 @@ const userSchema = require('../models/model')
 async function listOfSellers() 
 {
         try{
-            var result = await userSchema.find({},{ _id:0 ,  username:1, seller_id:1 });
+            var result = await userSchema.find({ seller_id : { $ne:null }});
             return result
         }
         catch(e){{
