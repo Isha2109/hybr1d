@@ -21,18 +21,7 @@ var userSchema = new Schema({
     catalog:{
         type: [ { type: Schema.Types.Mixed }]
     },
-    orderQuantity:{
-        type:Number
-    },
-    orderId:{
-        type:String
-    },
-    orderDate:{
-        type:Date
-    },
-    totalItemQuantity:{
-        type:Number
-    }
+    orders:[{ type: Schema.Types.Mixed}]
 })
 
 var userSchema = mongoose.model('ecommuser', userSchema)

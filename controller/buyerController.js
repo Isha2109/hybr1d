@@ -14,7 +14,7 @@ async function listOfSellers(username)
     }
     try{
         
-        var sellerData = await userSchema.find({ seller_id : { $ne:null }});
+        var sellerData = await userSchema.find({ seller_id : { $ne:null }},{_id:0, catalog : 1, username:1 });
         return { statusMessage:null , data: sellerData }
     }
     catch(e){{
@@ -40,10 +40,40 @@ async function viewCatalogFunction(seller_id, username)
     return { statusMessage:null , data: sellerData }
 }
 
-//orderid, order quantity, order
-//apis- place order, view orders, check qauntity(stock), update if can place order or not, update total quantity in db, set default itemquantity to 100
+async function createOrder(orderReqObj){
+    try{
+        ok = await userSchema.findOne({ seller_id:orderReqObj.seller_id })
+        if(ok){
+            orderObj = { 
+                username: orderReqObj.username,
+                orderedItems : orderReqObj.items,
+                orderDate : new Date()
+            }
+            ok = await userSchema.findOne( { 
+                seller_id:orderObj.seller_id 
+            },{
+                $push: {
+                    orders:{
+                        orderObj
+                    }}
+            })
+
+            if (ok) {
+                return {message: "order created"}
+            }
+            else {
+                return {message: "order creation failed"}
+            }
+        }
+        else{
+           return { message:"not a seller" }
+        }
+    }
+    catch(e){
+        console.log(e)
+    }
+}
 
 
 
-
-module.exports = {listOfSellers, viewCatalogFunction}
+module.exports = {listOfSellers, viewCatalogFunction, createOrder}
