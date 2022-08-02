@@ -44,12 +44,17 @@ async function createOrder(orderReqObj){
     try{
         ok = await userSchema.findOne({ seller_id:orderReqObj.seller_id },{ _id:0 , catalog:1 })
         if(ok){
-            console.log(ok.catalog)
-            console.log(orderReqObj.items)
             orderObj = { 
                 username: orderReqObj.username,
                 orderedItems : orderReqObj.items,
                 orderDate : new Date()
+            }
+            for (let i in orderReqObj.items){
+                for (let j in ok.catalog){
+                    if(orderReqObj.items[i].itemName != ok.catalog[j].itemName && orderReqObj.items[i].itemCategory != ok.catalog[j].itemCategory){
+                        return { message: "item not in catalog" }
+                    }
+                }
             }
             ok = await userSchema.findOne( { 
                 seller_id:orderObj.seller_id 

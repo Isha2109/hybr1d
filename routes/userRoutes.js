@@ -83,15 +83,18 @@ router.post('/create-order/:seller_id', async function(req, res){
     ok = await createOrder(orderObj)
 
     if(ok.message == "not a seller"){
-        res.status(400).send({status:"ok", message:"not a seller"})
+        res.status(400).send({status:"ok", message:ok.message})
+    }
+    else if (ok.message == "item not in catalog"){
+        res.status(400).send({status:"ok", message:ok.message})
     }
     else if(ok.message=="order created"){
-        res.status(200).send({status:"ok", message:"order added successfully"})
+        res.status(200).send({status:"ok", message:ok.message})
     }
     else if(ok.message=="order creation failed"){
-        res.status(400).send({status:"ok", message:"order creation failed"})
+        res.status(400).send({status:"ok", message: ok.message})
     }
-    else res.status(404).send({status:"ok", message:"an unknown error occured"})
+    else res.status(404).send({status:"ok", message: ok.message})
 
 })
 
