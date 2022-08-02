@@ -2,8 +2,7 @@ const express= require('express');
 const router = express.Router();
 const {userLogoutCheck, userLogout} = require('../controller/controller')
 const {listOfSellers, viewCatalogFunction, createOrder} = require('../controller/buyerController')
-const {addItemsToDatabase,} = require('../controller/sellerController');
-const { getItemId } = require('../general/general');
+const {addItemsToDatabase, getOrder } = require('../controller/sellerController');
 
 
 router.put('/logout', async function(req, res){
@@ -81,6 +80,7 @@ router.post('/create-order/:seller_id', async function(req, res){
     }
 
     ok = await createOrder(orderObj)
+    console.log(ok)
 
     if(ok.message == "not a seller"){
         res.status(400).send({status:"ok", message:ok.message})
@@ -96,6 +96,17 @@ router.post('/create-order/:seller_id', async function(req, res){
     }
     else res.status(404).send({status:"ok", message: ok.message})
 
+})
+
+router.get('/orders', async function(req, res){
+    username = req.username.username
+
+    result = await getOrder(username)
+    if(result.data) res.status(200).send({status:"ok", message:"order of seller", data: result})
+    else if(result.statusMessage == "not a buyer"){
+        res.status(400).send({status:"ok", message:"not a buyer"})
+    }
+    else res.status(400).send({status:"ok", message:"no seller found"})
 })
 
 

@@ -42,23 +42,34 @@ async function viewCatalogFunction(seller_id, username)
 
 async function createOrder(orderReqObj){
     try{
-        ok = await userSchema.findOne({ seller_id:orderReqObj.seller_id },{ _id:0 , catalog:1 })
-        if(ok){
+        userInfo = await userSchema.findOne({
+            username : orderReqObj.username, 
+            userType : {
+                $eq: "seller"
+            }},{
+                catalog:1, _id:0
+            }
+        )
+        if(!userInfo){
+            return { message:"not a buyer", data:{} }
+        }
+        else{
             orderObj = { 
                 username: orderReqObj.username,
                 orderedItems : orderReqObj.items,
                 orderDate : new Date()
             }
             for (let i in orderReqObj.items){
-                for (let j in ok.catalog){
-                    if(orderReqObj.items[i].itemName != ok.catalog[j].itemName && orderReqObj.items[i].itemCategory != ok.catalog[j].itemCategory){
+                for (let j in userInfo.catalog){
+                    if(orderReqObj.items[i].itemName != userInfo.catalog[j].itemName && orderReqObj.items[i].itemCategory != userInfo.catalog[j].itemCategory){
                         return { message: "item not in catalog" }
                     }
                 }
             }
-            ok = await userSchema.findOne( { 
-                seller_id:orderObj.seller_id 
-            },{
+            ok = await userSchema.findOneAndUpdate( { 
+                seller_id:orderReqObj.seller_id 
+            }
+            ,{
                 $push: {
                     orders:{
                         orderObj
@@ -71,9 +82,6 @@ async function createOrder(orderReqObj){
             else {
                 return {message: "order creation failed"}
             }
-        }
-        else{
-           return { message:"not a seller" }
         }
     }
     catch(e){

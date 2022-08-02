@@ -75,8 +75,26 @@ async function createCatalogFunction(catObj){
 
 }
 
+async function getOrder(username){
+    console.log(username)
+    userInfo = await userSchema.findOne({
+            username : username, 
+            userType : {
+                $eq: "seller"
+        }},{
+            _id:0 , orders:1
+    })
+    console.log(userInfo)
+    if(!userInfo){
+        return { statusMessage:"not a seller" , data:{}}
+    } else {
+        console.log(userInfo)
+        return { statusMessage:null, data:userInfo }
+    }
+}
 
 
 
 
-module.exports = {addItemsToDatabase, getAllItemsFunction, createCatalogFunction }
+
+module.exports = { addItemsToDatabase, getAllItemsFunction, createCatalogFunction, getOrder }
